@@ -1,0 +1,31 @@
+@media screen and (max-width: 991px) {
+  section {
+    padding: 30px;
+  }
+
+  /* Nav Bar*/
+
+  .header_scrolled {
+    height: auto;
+  }
+  .header_wrapper .menu-navbar-nav {
+    text-align: center;
+    padding-bottom: 15px;
+    background-color: var(--color-bg-drk-blue);
+  }
+  .home-wrapper {
+    padding: 150px 0;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    width: 85vw;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 75vw;
+  }
+}
