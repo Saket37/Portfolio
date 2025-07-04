@@ -1,20 +1,108 @@
 @media screen and (max-width: 991px) {
   section {
     padding: 30px;
+    /* Add top margin to account for the fixed header on mobile */
+    scroll-margin-top: 75px;
   }
 
   /* Nav Bar*/
 
-  .header_scrolled {
-    height: auto;
+  .contact-icon {
+    display: inline-flex;
+    justify-content: center;
+    width: 80%;
   }
-  .header_wrapper .menu-navbar-nav {
-    text-align: center;
-    padding-bottom: 15px;
+
+  .contact-icon a {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 0.5rem !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+  }
+
+  .navbar .container-fluid {
+    display: flex !important;
+    justify-content: flex-start !important;
+    /* Keep hamburger on the left */
+    align-items: center;
+    padding: 0 16px;
+  }
+
+  .navbar-toggler {
+    margin-left: 0 !important;
+  }
+
+  .navbar-toggler .fa-bars {
+    color: var(--color-white);
+    font-size: 1.5rem;
+  }
+
+  .header_wrapper {
+    position: relative;
+  }
+
+  #main-nav.collapse {
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    transform-origin: top center;
+    transform: scaleY(0.95);
+    opacity: 0;
+    position: absolute;
+    top: 60px;
+    /* Position it below your header */
+    left: 0;
+    width: 100%;
     background-color: var(--color-bg-drk-blue);
+    padding: 16px 32px;
+    border-radius: 0;
+    /* Removes rounded corners for a clean full-width look */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    visibility: hidden;
   }
+
+  /* Style for the menu when it's open */
+  #main-nav.collapse.show {
+    opacity: 1;
+    transform: scaleY(1);
+    visibility: visible;
+  }
+
+  #main-nav .navbar-nav {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  #main-nav.show .navbar-nav {
+    opacity: 1;
+    transition-delay: 0.1s;
+  }
+
+
+  .header_wrapper .menu-navbar-nav {
+    width: 100%;
+    padding: 0;
+    text-align: left;
+  }
+
+  .header_wrapper .menu-navbar-nav .nav-item {
+    margin: 10px 0;
+  }
+
   .home-wrapper {
     padding: 150px 0;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 75vw;
   }
 }
 
@@ -24,8 +112,26 @@
   }
 }
 
-@media screen and (max-width: 1200px) {
-  .container {
-    width: 75vw;
+@media screen and (max-width: 670px) {
+
+  .projects {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .main-title h2 {
+    font-size: 3rem;
+    text-align: center;
+  }
+
+  .main-title h2 .bg-text {
+    font-size: 4rem;
+    white-space: nowrap;
+  }
+
+  .about-container p {
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    padding: 0;
+    text-align: center;
   }
 }
