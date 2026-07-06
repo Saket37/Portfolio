@@ -1,0 +1,54 @@
+---
+title: "Clean Architecture with MVI"
+description: "A pragmatic take on unidirectional data flow."
+date: "2026-06-27"
+published: false
+tags: ["architecture", "android"]
+category: "architecture"
+glyph: "🏗️"
+accent: "cyan"
+---
+
+MVI gets a reputation for boilerplate, but the core idea is small: one
+immutable state object, one stream of intents, one place where state changes.
+Everything else is optional ceremony.
+
+## The three pieces
+
+- **State** — a single data class describing everything the screen shows.
+- **Intent** — a sealed hierarchy of everything the user can do.
+- **Reducer** — a pure function `(state, result) -> state`.
+
+```kotlin
+data class ProfileState(
+    val isLoading: Boolean = false,
+    val user: User? = null,
+    val error: String? = null,
+)
+
+sealed interface ProfileIntent {
+    data object Load : ProfileIntent
+    data class UpdateName(val name: String) : ProfileIntent
+}
+```
+
+## Where Clean Architecture fits
+
+The ViewModel translates intents into use-case calls; use cases know nothing
+about Android; repositories hide the data sources. The dependency arrow always
+points inward, which is what keeps the domain testable with plain JUnit.
+
+```kotlin
+class LoadProfile(private val repo: UserRepository) {
+    suspend operator fun invoke(): Result<User> = repo.currentUser()
+}
+```
+
+## Keep it pragmatic
+
+If a screen has two fields and a button, it does not need effects, processors,
+and a middleware pipeline. Reach for full MVI when state is genuinely complex —
+forms with validation, screens combining multiple streams — and let simple
+screens stay simple.
+
+*This is a placeholder post from the redesign — a longer version is on the way.*

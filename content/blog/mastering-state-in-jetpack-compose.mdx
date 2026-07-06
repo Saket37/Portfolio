@@ -1,0 +1,61 @@
+---
+title: "Mastering State in Jetpack Compose"
+description: "Hoisting, remember, and derived state, demystified."
+date: "2026-06-20"
+published: false
+tags: ["compose", "android"]
+category: "compose"
+glyph: "🧩"
+accent: "green"
+---
+
+State is the whole game in Compose. Once you internalize that the UI is a
+function of state — and nothing else — most of the framework's "weird" rules
+start making sense.
+
+## remember vs. rememberSaveable
+
+`remember` survives recomposition; it does **not** survive configuration
+changes or process death. If losing the value on rotation would annoy a user,
+reach for `rememberSaveable`:
+
+```kotlin
+@Composable
+fun SearchBar() {
+    var query by rememberSaveable { mutableStateOf("") }
+    TextField(value = query, onValueChange = { query = it })
+}
+```
+
+## Hoist by default
+
+A composable that both owns and mutates its own state is hard to test and
+impossible to reuse. Hoist the state to the caller and pass down a value plus
+an event:
+
+```kotlin
+@Composable
+fun Counter(count: Int, onIncrement: () -> Unit) {
+    Button(onClick = onIncrement) { Text("Clicked $count times") }
+}
+```
+
+The stateless version composes anywhere — previews, tests, different screens —
+and the caller decides where the state actually lives.
+
+## derivedStateOf for computed values
+
+When a value is *computed from* other state and changes less often than its
+inputs, wrap it in `derivedStateOf` so recomposition only happens when the
+result changes:
+
+```kotlin
+val showButton by remember {
+    derivedStateOf { listState.firstVisibleItemIndex > 0 }
+}
+```
+
+Scroll offset changes every frame; `showButton` flips once. That difference is
+free performance.
+
+*This is a placeholder post from the redesign — a longer version is on the way.*

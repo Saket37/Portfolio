@@ -1,0 +1,223 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* "Playful Terminal" (design 2a) palette */
+  --color-bg: #0a0f0c;
+  --color-panel: #0d1512;
+  --color-panel-alt: #0f1a15;
+  --color-chip: #0e1613;
+  --color-ink: #c3cfc6;
+  --color-ink-dim: #8ea095;
+  --color-ink-mute: #6b7d72;
+  --color-ink-faint: #5c6d62;
+  --color-head: #f4fff8;
+  --color-head-soft: #eafff1;
+  --color-brand-green: #4ade80;
+  --color-brand-amber: #fbbf24;
+  --color-brand-cyan: #38bdf8;
+  --color-brand-pink: #f472b6;
+  --color-brand-purple: #a78bfa;
+
+  --font-sans: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+
+  --animate-blink: blink 1s steps(1) infinite;
+  --animate-floaty: floaty 4s ease-in-out infinite;
+  --animate-gridpan: gridpan 6s linear infinite;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes gridpan {
+    from { background-position: 0 0; }
+    to { background-position: 44px 44px; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Dark-only site: the 2a design has a single (dark) identity. */
+:root {
+  --background: #0a0f0c;
+  --foreground: #c3cfc6;
+  --card: #0d1512;
+  --card-foreground: #c3cfc6;
+  --popover: #0d1512;
+  --popover-foreground: #c3cfc6;
+  --primary: #4ade80;
+  --primary-foreground: #0a0f0c;
+  --secondary: #0f1a15;
+  --secondary-foreground: #eafff1;
+  --muted: #0f1a15;
+  --muted-foreground: #8ea095;
+  --accent: #0f1a15;
+  --accent-foreground: #eafff1;
+  --destructive: #ff5f56;
+  --border: rgba(74, 222, 128, 0.18);
+  --input: rgba(74, 222, 128, 0.25);
+  --ring: #4ade80;
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-bg font-sans text-sm leading-[1.7] text-ink;
+  }
+  ::selection {
+    background: rgba(74, 222, 128, 0.25);
+    color: #f4fff8;
+  }
+  /* Keeps anchor-linked sections from landing behind the sticky header. */
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@layer utilities {
+  /* 44px background grid, two 1px hairlines */
+  .bg-grid {
+    background-image: linear-gradient(rgba(74, 222, 128, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74, 222, 128, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  /* Dashed section divider — the playful signature */
+  .divider-dashed {
+    border-top: 1px dashed rgba(74, 222, 128, 0.14);
+  }
+}
+
+/* Nav link underline wipe in the link's own accent color */
+.nav-link {
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after,
+.nav-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+/* Scroll reveal (toggled by the <Reveal> component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Blog prose: code blocks styled as the terminal window */
+.prose pre {
+  position: relative;
+  background: #0d1512;
+  border: 1px solid rgba(74, 222, 128, 0.18);
+  border-radius: 12px;
+  padding: 2.9rem 1.15rem 1.15rem;
+}
+.prose pre::before {
+  /* three macOS window dots */
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 16px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f56;
+  box-shadow: 18px 0 0 #ffbd2e, 36px 0 0 #27c93f;
+}
+.prose pre::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 37px;
+  border-bottom: 1px solid rgba(74, 222, 128, 0.12);
+  background: #0f1a15;
+  border-radius: 12px 12px 0 0;
+}
+.prose pre code {
+  position: relative;
+  z-index: 1;
+  color: #c3cfc6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-floaty,
+  .animate-gridpan,
+  .animate-fade-up,
+  .animate-blink {
+    animation: none;
+  }
+  .animate-fade-up {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

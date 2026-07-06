@@ -1,0 +1,63 @@
+---
+title: "Coroutines: A Practical Guide"
+description: "Structured concurrency without the headaches."
+date: "2026-07-03"
+published: false
+tags: ["kotlin", "coroutines"]
+category: "kotlin"
+glyph: "🤔"
+accent: "pink"
+---
+
+Coroutines are easy to start using and easy to misuse. The difference is
+usually structured concurrency: every coroutine lives in a scope, and the
+scope defines when it dies.
+
+## Pick the right scope
+
+On Android that decision is mostly made for you:
+
+```kotlin
+class ProfileViewModel(...) : ViewModel() {
+    fun refresh() {
+        viewModelScope.launch {
+            val user = repo.currentUser() // suspends, main-safe
+            _state.update { it.copy(user = user) }
+        }
+    }
+}
+```
+
+`viewModelScope` cancels automatically when the ViewModel is cleared — no
+leaked jobs, no manual bookkeeping.
+
+## Main-safety belongs in the repository
+
+Callers should never need to know which dispatcher a function requires. Make
+suspend functions main-safe at the source:
+
+```kotlin
+suspend fun currentUser(): User = withContext(Dispatchers.IO) {
+    dao.loadUser().toDomain()
+}
+```
+
+## Don't swallow cancellation
+
+`CancellationException` is the mechanism that makes structured concurrency
+work. A catch-all that eats it breaks cancellation silently:
+
+```kotlin
+try {
+    fetch()
+} catch (e: CancellationException) {
+    throw e // always rethrow
+} catch (e: Exception) {
+    _state.update { it.copy(error = e.message) }
+}
+```
+
+Follow those three rules and the vast majority of "mystery" coroutine bugs
+never happen.
+
+*This is a placeholder post from the redesign — a longer version is on the way.*
